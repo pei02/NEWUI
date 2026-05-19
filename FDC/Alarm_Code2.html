@@ -1,0 +1,181 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>FDC代碼查詢</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="./css/logo.png" sizes="64x64" type="image/png">
+
+    <script type="text/javascript" src="./json/alarm_list_zw.json"></script>
+</head>
+
+<body>
+
+    <p class="title">FDC代碼查詢</p>
+
+    <input type="text" id="AlarmCode" placeholder="請輸入代碼，例如：PH" />
+
+    <div class="row">
+
+        <div class="btn_block">
+            <input
+                type="button"
+                id="search"
+                value="查詢"
+                onclick="setQueryParam('code',AlarmCode.value)"
+                class="btn btn-softred"
+            />
+        </div>
+
+        <div class="btn_block">
+            <input
+                type="button"
+                id="Refresh"
+                value="重整"
+                onclick="Refresh()"
+                class="btn btn-softwhite"
+            />
+        </div>
+
+    </div>
+
+    <h1 class="nodata_text d-none" id="nodata"></h1>
+
+    <!-- 複製提示 -->
+    <div id="copyToast" class="copy-toast">
+        ✔ 已複製內容
+    </div>
+
+</body>
+
+<script>
+
+    const Code = getQueryParam();
+
+    document.getElementById('AlarmCode').value = Code;
+
+    Code
+        ? search(Code)
+        : (
+            Code !== null &&
+            (
+                nodata.classList.remove('d-none'),
+                nodata.innerHTML = '請輸入機故代碼'
+            )
+        );
+
+    function Refresh() {
+        location.href = location.origin + location.pathname;
+    }
+
+    function setQueryParam(param, value) {
+
+        var urlParams = new URLSearchParams(window.location.search);
+
+        urlParams.set(param, value);
+
+        window.history.replaceState(
+            null,
+            null,
+            "?" + urlParams.toString()
+        );
+
+        location.reload();
+    }
+
+    function getQueryParam() {
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        return urlParams.get('code');
+    }
+
+    // 複製功能
+    function copyContent(index) {
+
+        const code =
+            document.getElementById(`alarm_code${index}`).innerText;
+
+        const content =
+            document.getElementById(`content_zw${index}`).innerText;
+
+        const text = content;
+
+        navigator.clipboard.writeText(text).then(() => {
+
+            const toast = document.getElementById('copyToast');
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 1800);
+
+        }).catch(() => {
+
+            console.log("複製失敗");
+
+        });
+    }
+
+    function search(code) {
+
+        const result_zw =
+            alarm_list_zw.filter(x => x.code === code);
+
+        if (result_zw.length > 0) {
+
+            for (let index = 0; index < result_zw.length; index++) {
+
+                document.write(`
+
+                    <div id="card${index}" class="p-10 card">
+
+                        <div class="card-top">
+
+                            <div class="p-12">
+
+                                <div
+                                    id="alarm_code${index}"
+                                    class="code"
+                                >
+                                    ${result_zw[index].code}
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="copy-btn"
+                                onclick="copyContent(${index})"
+                            >
+                                COPY
+                            </button>
+
+                        </div>
+
+                        <div
+                            id="content_zw${index}"
+                            class="p-12"
+                        >
+                            ${result_zw[index].content}
+                        </div>
+
+                    </div>
+
+                `);
+            }
+
+        } else {
+
+            const nodata =
+                document.getElementById('nodata');
+
+            nodata.classList.remove('d-none');
+
+            nodata.innerHTML = '查無資料';
+        }
+    }
+
+</script>
+
+</html>

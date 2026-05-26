@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>報表小幫手 2.0</title>
+  <link rel="icon" href="./css/ICON.png" sizes="64x64" type="image/png">
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="icon" href="./css/alm.ico" type="image/x-icon" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+     <div class="brand">
+  <img src="./css/logo.png" alt="報表小幫手 Logo" class="brand-logo">
+
+  <div class="brand-text">
+    <h1>報表小幫手 <span>2.0</span></h1>
+    <p>Machine Fault Report Assistant</p>
+  </div>
+</div>
+    </header>
+
+    <section class="dashboard">
+      <article class="card input-card">
+        <div class="card-header">
+          <span class="step-badge">1</span>
+          <h2>請輸入機故表</h2>
+        </div>
+
+        <textarea id="inputText" spellcheck="false" placeholder="1130-1200 NXT"></textarea>
+
+        <div class="button-row">
+          <button class="btn primary" onclick="runAll()">時間運算</button>
+          <button class="btn soft" onclick="clearAll()">清除</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-header">
+          <span class="step-badge blue">2</span>
+          <h2>時間運算結果</h2>
+        </div>
+
+        <div id="timeResult" class="result-list empty">尚未運算</div>
+
+              </article>
+
+      <article class="card result-card">
+        <div class="card-header">
+          <span class="step-badge yellow">3</span>
+          <h2>演算結果</h2>
+          <button class="copy-btn" onclick="copyResult()">COPY</button>
+        </div>
+
+        <div id="calcResult" class="summary-list empty">尚未分類</div>
+      </article>
+
+      <article class="card warning-card">
+        <div class="card-header">
+          <span class="step-badge mint">4</span>
+          <h2>未分類項目</h2>
+        </div>
+
+        <div id="unknownResult" class="result-list empty">尚無資料</div>
+      </article>
+    </section>
+  </main>
+
+<div id="copyToast" class="copy-toast">
+  ✓ 已複製到剪貼簿
+</div>
+
+  <script src="./js/keywords.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

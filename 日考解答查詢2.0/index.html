@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="./css/ICON.png" sizes="64x64" type="image/png">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./json/question.json"></script>
+  <script src="./json/keyword.json"></script>
+  <title>日考解答查詢系統</title>
+</head>
+
+<body>
+  <main class="app-shell">
+    <span class="notice_text update-label">2026/05/26 介面大改版</span>
+
+    <section class="app-panel">
+      <p class="title">日考解答查詢系統</p>
+
+      <div class="search-box">
+        <input type="text" id="topic" placeholder="請輸入題目或關鍵字">
+      </div>
+
+      <div class="app-actions">
+        <button id="search" class="btn btn-primary">查詢</button>
+        <button id="refresh" class="btn btn-ghost">清除</button>
+      </div>
+
+      <div id="keywordArea" class="keyword-area"></div>
+      <div id="statusText" class="status-text d-none"></div>
+      <div id="resultArea" class="result-area"></div>
+      <h1 class="nodata_text d-none" id="nodata">查無資料</h1>
+    </section>
+  </main>
+
+  <a href="auto.html" class="side-link">試試自動答題</a>
+
+
+<script>
+(function () {
+  var topicInput = document.getElementById('topic');
+  var searchBtn = document.getElementById('search');
+  var refreshBtn = document.getElementById('refresh');
+  var keywordArea = document.getElementById('keywordArea');
+  var resultArea = document.getElementById('resultArea');
+  var nodata = document.getElementById('nodata');
+  var statusText = document.getElementById('statusText');
+
+  function normalizeText(text) {
+    if (text === undefined || text === null) return '';
+
+    return String(text)
+      .replace(/\s+/g, '')
+      .replace(/　/g, '')
+      .replace(/[。？?：:，,、！!；;「」『』"'（）()【】\[\]<>《》]/g, '')
+      .toUpperCase();
+  }
+
+  function escapeHTML(text) {
+    if (text === undefined || text === null) return '';
+
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function renderKeywords() {
+    var html = '<span class="text-bluewhite">關鍵字查詢：</span>';
+
+    keyword.forEach(function (item) {
+      html += '<button class="keyword keyword-orange" data-word="' + escapeHTML(item.word) + '">' +
+        escapeHTML(item.word) +
+      '</button>';
+    });
+
+    keywordArea.innerHTML = html;
+  }
+
+  function renderResults(list) {
+    resultArea.innerHTML = '';
+
+    var fragment = document.createDocumentFragment();
+
+    list.forEach(function (item) {
+      var card = document.createElement('div');
+      card.className = 'result';
+
+      card.innerHTML =
+        '<div class="p-10">' +
+          '<p class="text-justify result_text">' + escapeHTML(item.topic) + '</p>' +
+          '<p class="text-justify result_text">' + item.option + '</p>' +
+          '<div class="ans">' + escapeHTML(item.ans) + '</div>' +
+        '</div>';
+
+      fragment.appendChild(card);
+    });
+
+    resultArea.appendChild(fragment);
+  }
+
+  function search(text) {
+    var keywordText = normalizeText(text);
+
+    resultArea.innerHTML = '';
+    statusText.innerHTML = '';
+    nodata.classList.add('d-none');
+
+    if (!keywordText) {
+      nodata.innerHTML = '請輸入欲查詢題目';
+      nodata.classList.remove('d-none');
+      return;
+    }
+
+    var results = question.filter(function (item) {
+      var source = normalizeText(item.topic + item.option + item.ans);
+      return source.indexOf(keywordText) > -1;
+    });
+
+    if (results.length === 0) {
+      nodata.innerHTML = '查無資料';
+      nodata.classList.remove('d-none');
+      return;
+    }
+
+    statusText.innerHTML = '查詢結果：共 ' + results.length + ' 筆';
+    renderResults(results);
+  }
+
+  searchBtn.addEventListener('click', function () {
+    search(topicInput.value);
+  });
+
+  refreshBtn.addEventListener('click', function () {
+    topicInput.value = '';
+    resultArea.innerHTML = '';
+    statusText.innerHTML = '';
+    nodata.classList.add('d-none');
+    topicInput.focus();
+  });
+
+  topicInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      search(topicInput.value);
+    }
+  });
+
+  keywordArea.addEventListener('click', function (event) {
+    if (event.target.classList.contains('keyword')) {
+      var word = event.target.getAttribute('data-word');
+      topicInput.value = word;
+      search(word);
+    }
+  });
+
+  renderKeywords();
+})();
+</script>
+</body>
+</html>

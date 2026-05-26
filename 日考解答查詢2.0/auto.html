@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11">
+<link rel="stylesheet" href="./css/style.css" >
+<link rel="icon" href="./css/ICON.png" sizes="64x64" type="image/png">
+<script src="./json/question.json" type="text/javascript"></script>
+<script src="./json/keyword.json" type="text/javascript"></script>
+<title>自動答題</title>
+
+</head>
+
+<body>
+  <main class="app-shell">
+    <section class="app-panel">
+      <p class="title">自動答題</p>
+
+      <div class="notice-card">
+        <p class="notice_text">※使用方式：於IE瀏覽器開啟日考，複製原始碼→按F12→主控台→運行版本切換為11→貼上此段程式按綠色三角形執行→縮小視窗(勿關閉)</p>
+        <p class="notice_text">※選擇題為比對填答，是非題自動全選YES，<span class="notice-highlight">程式執行完務必再檢查一下</span></p>
+        <p class="notice_text">※若有答題錯誤的情況請告訴我，感恩~</p>
+      </div>
+
+      <div class="app-actions single">
+        <button onclick="copyTextarea()" class="btn btn-primary">複製原始碼</button>
+      </div>
+
+      <textarea id="myTextarea">
+	  (貼上程式)
+      </textarea>
+    </section>
+  </main>
+
+  <a href="index.html" class="side-link">日考解答查詢系統</a>
+
+<script>
+function copyTextarea() {
+  var textarea = document.getElementById("myTextarea");
+  textarea.select();
+  document.execCommand("copy");
+}
+</script>
+</body>
+
+
+</html>
+
